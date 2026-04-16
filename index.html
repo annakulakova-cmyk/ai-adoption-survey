@@ -720,6 +720,7 @@
       await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
+        credentials: 'include',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(data)
       });
