@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Adoption Survey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #6B2FD9;
+      --purple-dark: #4F1FA8;
+      --purple-light:#EEE9FF;
+      --purple-mid:  #D6C8FA;
+      --bg:          #F2EEFF;
+      --text:        #1A1035;
+      --muted:       #6B6880;
+      --white:       #FFFFFF;
+      --radius:      16px;
+      --radius-sm:   10px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--purple-light);
+      color: var(--purple);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--purple); }
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 16px;
+      line-height: 1.6;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .hero-meta span {
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-meta span::before { content: '✦'; color: var(--purple); font-size: 10px; }
+
+    /* ── FORM CARD ── */
+    .form-wrap {
+      max-width: 680px;
+      margin: 0 auto 80px;
+      padding: 0 16px;
+    }
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 40px 40px 36px;
+      box-shadow: 0 4px 40px rgba(107,47,217,.10);
+    }
+    @media (max-width: 600px) { .card { padding: 28px 20px 24px; } }
+
+    /* ── PROGRESS ── */
+    .progress-wrap { margin-bottom: 32px; }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .progress-bar-bg {
+      height: 6px;
+      background: var(--purple-light);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 100px;
+      transition: width .4s ease;
+    }
+
+    /* ── STEPS ── */
+    .step { display: none; }
+    .step.active { display: block; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    .step-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .step-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* ── FIELDS ── */
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .field label .opt {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .field input[type="text"],
+    .field input[type="email"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #E2DAF5;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color .2s;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(107,47,217,.12);
+    }
+    .field textarea { resize: vertical; min-height: 90px; }
+
+    /* checkboxes & radios */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .options.grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 500px) { .options.grid { grid-template-columns: 1fr; } }
+
+    .opt-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1.5px solid #E2DAF5;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      font-size: 14px;
+      line-height: 1.4;
+      user-select: none;
+    }
+    .opt-item:hover { border-color: var(--purple-mid); background: var(--purple-light); }
+    .opt-item input { margin-top: 2px; accent-color: var(--purple); flex-shrink: 0; }
+    .opt-item.checked { border-color: var(--purple); background: var(--purple-light); }
+
+    /* ── BUTTONS ── */
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      gap: 12px;
+    }
+    .btn {
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+    }
+    .btn-primary {
+      background: var(--purple);
+      color: #fff;
+      flex: 1;
+    }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,47,217,.3); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid #E2DAF5;
+      padding: 13px 24px;
+    }
+    .btn-secondary:hover { border-color: var(--purple-mid); color: var(--text); }
+
+    /* ── SUCCESS ── */
+    .success { display: none; text-align: center; padding: 20px 0; }
+    .success.active { display: block; animation: fadeIn .4s ease; }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: var(--purple-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    .success h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    .success p  { color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* error highlight */
+    .field.error input, .field.error select, .field.error textarea {
+      border-color: #E53E3E;
+    }
+    .field .err-msg { display: none; font-size: 12px; color: #E53E3E; margin-top: 5px; }
+    .field.error .err-msg { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Algorithmics Internal</div>
+  <h1>How are you using<br/><span>AI at work?</span></h1>
+  <p>A 5-minute survey to understand our team's AI adoption. Your answers help us build better support, training, and tools for everyone.</p>
+  <div class="hero-meta">
+    <span>Anonymous-friendly</span>
+    <span>5 minutes</span>
+    <span>~300 participants</span>
+  </div>
+</section>
+
+<!-- FORM -->
+<div class="form-wrap">
+  <div class="card">
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span id="step-label">Step 1 of 6</span>
+        <span id="step-pct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <form id="survey-form" novalidate>
+
+      <!-- STEP 1: About You -->
+      <div class="step active" data-step="1">
+        <div class="step-title">About you</div>
+        <div class="step-sub">Let's start with some basics. This helps us slice the data by team and role.</div>
+
+        <div class="field" id="f-name">
+          <label>Your name</label>
+          <input type="text" name="name" placeholder="Anna Kulakova" />
+          <div class="err-msg">Please enter your name</div>
+        </div>
+        <div class="field" id="f-email">
+          <label>Work email</label>
+          <input type="email" name="email" placeholder="anna@algorithmics.com" />
+          <div class="err-msg">Please enter a valid email</div>
+        </div>
+        <div class="field" id="f-dept">
+          <label>Department</label>
+          <select name="department">
+            <option value="">Select department…</option>
+            <option>Engineering</option>
+            <option>Product</option>
+            <option>Design</option>
+            <option>Marketing</option>
+            <option>Analytics</option>
+            <option>Operations</option>
+            <option>HR</option>
+            <option>Finance</option>
+            <option>Other</option>
+          </select>
+          <div class="err-msg">Please select your department</div>
+        </div>
+        <div class="field" id="f-role">
+          <label>Your role</label>
+          <select name="role">
+            <option value="">Select role…</option>
+            <option>Developer</option>
+            <option>Team Lead</option>
+            <option>Manager / Director</option>
+            <option>Analyst</option>
+            <option>Designer</option>
+            <option>Marketer</option>
+            <option>HR / Recruiter</option>
+            <option>Finance / Ops</option>
+            <option>Other</option>
+          </select>
+          <div class="err-msg">Please select your role</div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Usage -->
+      <div class="step" data-step="2">
+        <div class="step-title">Your AI usage</div>
+        <div class="step-sub">No right or wrong answers — we just want to understand where people are today.</div>
+
+        <div class="field" id="f-freq">
+          <label>How often do you use AI tools at work?</label>
+          <div class="options" id="freq-options">
+            <label class="opt-item"><input type="radio" name="frequency" value="Several times a day — it's part of my workflow" /> Several times a day — it's part of my workflow</label>
+            <label class="opt-item"><input type="radio" name="frequency" value="Once a day" /> Once a day</label>
+            <label class="opt-item"><input type="radio" name="frequency" value="A few times a week" /> A few times a week</label>
+            <label class="opt-item"><input type="radio" name="frequency" value="Rarely (once a week or less)" /> Rarely (once a week or less)</label>
+            <label class="opt-item"><input type="radio" name="frequency" value="I don't use AI tools" /> I don't use AI tools</label>
+          </div>
+          <div class="err-msg">Please choose one option</div>
+        </div>
+
+        <div class="field" id="f-tools">
+          <label>Which AI tools do you use? <span class="opt">(select all that apply)</span></label>
+          <div class="options grid" id="tools-options">
+            <label class="opt-item"><input type="checkbox" name="tools" value="ChatGPT" /> ChatGPT</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Claude (claude.ai)" /> Claude (claude.ai)</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Claude Code" /> Claude Code</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Gemini" /> Gemini</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="GitHub Copilot" /> GitHub Copilot</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Copilot (M365)" /> Copilot (M365)</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Cursor / Windsurf" /> Cursor / Windsurf</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Perplexity" /> Perplexity</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Notion AI" /> Notion AI</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Midjourney / DALL-E" /> Midjourney / DALL-E</label>
+            <label class="opt-item"><input type="checkbox" name="tools" value="Grammarly AI" /> Grammarly AI</label>
+          </div>
+          <div class="field" style="margin-top:10px; margin-bottom:0">
+            <input type="text" name="tools_other" placeholder="Other tools…" />
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Depth — 10 products + tasks -->
+      <div class="step" data-step="3">
+        <div class="step-title">How deeply you use AI</div>
+        <div class="step-sub">These questions reveal the real difference between occasional use and true proficiency.</div>
+
+        <div class="field">
+          <label>Name as many AI-powered products you encounter in daily life or work as you can — not just chat tools, anything with AI inside.</label>
+          <textarea name="aiProducts" placeholder="e.g. Gmail Smart Reply, Spotify recommendations, Google Maps ETA, Notion AI, GitHub Copilot, Grammarly, TikTok feed…"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Which tasks do you use AI for? <span class="opt">(select all that apply)</span></label>
+          <div class="options grid">
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Writing / editing text" /> Writing / editing text</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Summarising meetings / docs" /> Summarising meetings / docs</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Research / information search" /> Research / information search</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Brainstorming / ideas" /> Brainstorming / ideas</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Writing or reviewing code" /> Writing or reviewing code</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Debugging / fixing bugs" /> Debugging / fixing bugs</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Data analysis" /> Data analysis</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Creating presentations" /> Creating presentations</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Customer communication" /> Customer communication</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Planning / structuring tasks" /> Planning / structuring tasks</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Translation" /> Translation</label>
+            <label class="opt-item"><input type="checkbox" name="tasks" value="Recruiting / HR tasks" /> Recruiting / HR tasks</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Give one specific example of a task you solved with AI in the last week.</label>
+          <textarea name="taskExample" placeholder="e.g. I asked Claude to review my onboarding email sequence and suggest a shorter version. It also caught two sentences that were confusing for non-native speakers."></textarea>
+        </div>
+
+        <div class="field">
+          <label>How much time does AI save you per week?</label>
+          <select name="timeSaved">
+            <option value="">Select…</option>
+            <option>Less than 1 hour</option>
+            <option>1–3 hours</option>
+            <option>3–5 hours</option>
+            <option>5–10 hours</option>
+            <option>More than 10 hours</option>
+            <option>Hard to estimate</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STEP 4: Setup & techniques -->
+      <div class="step" data-step="4">
+        <div class="step-title">How you set up AI</div>
+        <div class="step-sub">The biggest gap between casual users and power users is context — how much do you teach AI about you?</div>
+
+        <div class="field">
+          <label>Have you set up AI to know your context? <span class="opt">(select all that apply)</span></label>
+          <div class="options">
+            <label class="opt-item"><input type="checkbox" name="setup" value="Custom instructions / system prompt (ChatGPT or Claude)" /> Custom instructions / system prompt (ChatGPT or Claude)</label>
+            <label class="opt-item"><input type="checkbox" name="setup" value="Claude Project or ChatGPT Project with my docs" /> Claude Project or ChatGPT Project with my docs</label>
+            <label class="opt-item"><input type="checkbox" name="setup" value="Skills file or rules file for recurring tasks" /> Skills file or rules file for recurring tasks</label>
+            <label class="opt-item"><input type="checkbox" name="setup" value="Connected AI to my documents / company knowledge (RAG)" /> Connected AI to my documents / company knowledge (RAG)</label>
+            <label class="opt-item"><input type="checkbox" name="setup" value="AI agents or automations (Zapier, Make, n8n, custom scripts)" /> AI agents or automations (Zapier, Make, n8n, custom scripts)</label>
+            <label class="opt-item"><input type="checkbox" name="setup" value="No — I start from scratch each time" /> No — I start from scratch each time</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Which prompting techniques do you use? <span class="opt">(select all that apply)</span></label>
+          <div class="options">
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Give AI context about my role / company / task background" /> Give AI context about my role / company / task background</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Ask AI to think step by step (chain-of-thought)" /> Ask AI to think step by step (chain-of-thought)</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Give examples of what I want (few-shot)" /> Give examples of what I want (few-shot)</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Break complex tasks into a chain of prompts" /> Break complex tasks into a chain of prompts</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Ask AI to criticise or find flaws in my work" /> Ask AI to criticise or find flaws in my work</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Use multi-turn dialogue (going back and forth)" /> Use multi-turn dialogue (going back and forth)</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="Have saved prompt templates I reuse" /> Have saved prompt templates I reuse</label>
+            <label class="opt-item"><input type="checkbox" name="techniques" value="None of the above" /> None of the above</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Paste or describe your typical prompt when asking AI for help at work. <span class="opt">(optional)</span></label>
+          <textarea name="samplePrompt" placeholder="e.g. "You are a senior copywriter. Here's the brief: [brief]. Write 3 subject line options in a friendly but professional tone. Avoid jargon.""></textarea>
+        </div>
+      </div>
+
+      <!-- STEP 5: Developer block (shown to devs) / Learning habits (everyone) -->
+      <div class="step" data-step="5">
+        <!-- Dev block (visible only if role = Developer or Team Lead) -->
+        <div id="dev-block">
+          <div class="step-title">AI in your dev workflow</div>
+          <div class="step-sub">A few extra questions for engineers.</div>
+
+          <div class="field">
+            <label>Which coding AI tools do you use? <span class="opt">(select all that apply)</span></label>
+            <div class="options grid">
+              <label class="opt-item"><input type="checkbox" name="devTools" value="Claude Code" /> Claude Code</label>
+              <label class="opt-item"><input type="checkbox" name="devTools" value="Cursor" /> Cursor</label>
+              <label class="opt-item"><input type="checkbox" name="devTools" value="GitHub Copilot" /> GitHub Copilot</label>
+              <label class="opt-item"><input type="checkbox" name="devTools" value="Windsurf" /> Windsurf</label>
+              <label class="opt-item"><input type="checkbox" name="devTools" value="Replit AI" /> Replit AI</label>
+              <label class="opt-item"><input type="checkbox" name="devTools" value="ChatGPT / Claude in browser" /> ChatGPT / Claude in browser</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>How do you use AI in your dev workflow? <span class="opt">(select all that apply)</span></label>
+            <div class="options grid">
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Code generation" /> Code generation</label>
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Debugging" /> Debugging</label>
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Refactoring" /> Refactoring</label>
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Understanding legacy code" /> Understanding legacy code</label>
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Writing tests" /> Writing tests</label>
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Code review" /> Code review</label>
+              <label class="opt-item"><input type="checkbox" name="devUsage" value="Architecture decisions" /> Architecture decisions</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Do you have a CLAUDE.md / rules file in your projects that guides AI behaviour?</label>
+            <div class="options">
+              <label class="opt-item"><input type="radio" name="claudeMd" value="Yes, I set it up" /> Yes, I set it up</label>
+              <label class="opt-item"><input type="radio" name="claudeMd" value="No, but I know what it is" /> No, but I know what it is</label>
+              <label class="opt-item"><input type="radio" name="claudeMd" value="What's that?" /> What's that?</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Learning habits (always shown) -->
+        <div style="margin-top: 32px;" id="learning-block">
+          <div class="step-title" id="learning-title">Staying up to date</div>
+          <div class="step-sub">AI moves fast. How do you keep up?</div>
+
+          <div class="field">
+            <label>How do you stay updated on AI? <span class="opt">(select all that apply)</span></label>
+            <div class="options">
+              <label class="opt-item"><input type="checkbox" name="learningHabits" value="Follow AI newsletters or blogs (DeepLearning.AI, The Batch, etc.)" /> Follow AI newsletters or blogs (DeepLearning.AI, The Batch, etc.)</label>
+              <label class="opt-item"><input type="checkbox" name="learningHabits" value="Follow researchers / practitioners on X or LinkedIn" /> Follow researchers / practitioners on X or LinkedIn</label>
+              <label class="opt-item"><input type="checkbox" name="learningHabits" value="Take courses (Coursera, DeepLearning.AI, etc.)" /> Take courses (Coursera, DeepLearning.AI, etc.)</label>
+              <label class="opt-item"><input type="checkbox" name="learningHabits" value="Discuss AI with colleagues" /> Discuss AI with colleagues</label>
+              <label class="opt-item"><input type="checkbox" name="learningHabits" value="Just try new tools when I hear about them" /> Just try new tools when I hear about them</label>
+              <label class="opt-item"><input type="checkbox" name="learningHabits" value="I don't actively follow AI developments" /> I don't actively follow AI developments</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Have you tried to build something with AI — an agent, automation, or integration?</label>
+            <div class="options">
+              <label class="opt-item"><input type="radio" name="builtAutomation" value="Yes, and it works" /> Yes, and it works</label>
+              <label class="opt-item"><input type="radio" name="builtAutomation" value="Yes, but I dropped it" /> Yes, but I dropped it</label>
+              <label class="opt-item"><input type="radio" name="builtAutomation" value="No, but I'm interested" /> No, but I'm interested</label>
+              <label class="opt-item"><input type="radio" name="builtAutomation" value="No" /> No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6: Barriers & Champion -->
+      <div class="step" data-step="6">
+        <div class="step-title">Almost done 🎉</div>
+        <div class="step-sub">Last questions — your honest answers here are the most valuable for us.</div>
+
+        <div class="field">
+          <label>What stops you from using AI more actively? <span class="opt">(select all that apply)</span></label>
+          <div class="options">
+            <label class="opt-item"><input type="checkbox" name="barriers" value="Don't know which tool fits which task" /> Don't know which tool fits which task</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="Don't know how to write effective prompts" /> Don't know how to write effective prompts</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="Privacy / security concerns" /> Privacy / security concerns</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="AI tools not approved or accessible at work" /> AI tools not approved or accessible at work</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="Results are unreliable or I don't trust them" /> Results are unreliable or I don't trust them</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="No time to learn" /> No time to learn</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="Don't see where AI could help in my work" /> Don't see where AI could help in my work</label>
+            <label class="opt-item"><input type="checkbox" name="barriers" value="Nothing — I already use it as much as I want" /> Nothing — I already use it as much as I want</label>
+          </div>
+        </div>
+
+        <div class="field" id="f-champion">
+          <label>Would you be interested in becoming an AI champion in your team?</label>
+          <div class="options">
+            <label class="opt-item"><input type="radio" name="champion" value="Yes, definitely" /> Yes, definitely</label>
+            <label class="opt-item"><input type="radio" name="champion" value="Maybe, if I knew more" /> Maybe, if I knew more</label>
+            <label class="opt-item"><input type="radio" name="champion" value="Not really" /> Not really</label>
+            <label class="opt-item"><input type="radio" name="champion" value="No" /> No</label>
+          </div>
+          <div class="err-msg">Please choose one option</div>
+        </div>
+
+        <div class="field">
+          <label>Anything else you'd like to share? <span class="opt">(optional)</span></label>
+          <textarea name="comments" placeholder="Tools you wish we had, barriers we missed, anything…"></textarea>
+        </div>
+      </div>
+
+      <!-- Nav buttons -->
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" id="btn-back" style="display:none">← Back</button>
+        <button type="button" class="btn btn-primary" id="btn-next">Continue →</button>
+        <button type="submit"  class="btn btn-primary" id="btn-submit" style="display:none">Submit survey ✓</button>
+      </div>
+    </form>
+
+    <!-- Success screen -->
+    <div class="success" id="success-screen">
+      <div class="success-icon">✓</div>
+      <h2>Thank you!</h2>
+      <p>Your responses have been recorded.<br/>We'll use this to shape our AI adoption programme — and reach back out to everyone who's up for being an AI champion.</p>
+    </div>
+  </div>
+</div>
+
+<footer>Built for Algorithmics · AI Adoption Initiative 2026</footer>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────
+  // After you deploy the Apps Script, paste the web app URL here:
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvfJ6V5-9vzyyoRiwj15TDquqQJ-IGVZ-jpUfpA-Oz7oQVLXNOpwmwRx4EN6q5EIhZ/exec';
+  // ────────────────────────────────────────────────────────
+
+  const TOTAL_STEPS = 6;
+  let currentStep = 1;
+
+  const form      = document.getElementById('survey-form');
+  const btnNext   = document.getElementById('btn-next');
+  const btnBack   = document.getElementById('btn-back');
+  const btnSubmit = document.getElementById('btn-submit');
+  const success   = document.getElementById('success-screen');
+
+  function getStep(n) { return document.querySelector(`.step[data-step="${n}"]`); }
+
+  function updateProgress() {
+    const pct = Math.round(((currentStep - 1) / TOTAL_STEPS) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('step-label').textContent = `Step ${currentStep} of ${TOTAL_STEPS}`;
+    document.getElementById('step-pct').textContent = pct + '%';
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    getStep(n).classList.add('active');
+
+    // show/hide dev block based on role
+    const role = form.querySelector('[name="role"]').value;
+    const isDev = role === 'Developer' || role === 'Team Lead';
+    const devBlock = document.getElementById('dev-block');
+    const learningTitle = document.getElementById('learning-title');
+    if (devBlock) {
+      devBlock.style.display = isDev ? 'block' : 'none';
+      if (!isDev && learningTitle) {
+        learningTitle.textContent = 'Staying up to date';
+      }
+    }
+
+    btnBack.style.display   = n > 1 ? 'inline-block' : 'none';
+    btnNext.style.display   = n < TOTAL_STEPS ? 'inline-block' : 'none';
+    btnSubmit.style.display = n === TOTAL_STEPS ? 'inline-block' : 'none';
+    updateProgress();
+  }
+
+  // checkbox/radio visual state
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      const item = el.closest('.opt-item');
+      if (!item) return;
+      if (el.type === 'radio') {
+        // uncheck siblings
+        document.querySelectorAll(`input[name="${el.name}"]`).forEach(r => {
+          r.closest('.opt-item')?.classList.remove('checked');
+        });
+      }
+      item.classList.toggle('checked', el.checked);
+    }
+  });
+
+  function validateStep(n) {
+    let ok = true;
+
+    function req(fieldId, inputSelector, check) {
+      const field = document.getElementById(fieldId);
+      if (!field || field.closest('.step[data-step]').dataset.step != n) return;
+      const el = field.querySelector(inputSelector);
+      const valid = check(el);
+      field.classList.toggle('error', !valid);
+      if (!valid) ok = false;
+    }
+
+    if (n === 1) {
+      req('f-name',  'input', el => el.value.trim() !== '');
+      req('f-email', 'input', el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()));
+      req('f-dept',  'select', el => el.value !== '');
+      req('f-role',  'select', el => el.value !== '');
+    }
+    if (n === 2) {
+      const freqChecked = document.querySelector('input[name="frequency"]:checked');
+      const freqField   = document.getElementById('f-freq');
+      freqField.classList.toggle('error', !freqChecked);
+      if (!freqChecked) ok = false;
+    }
+    if (n === 6) {
+      const champChecked = document.querySelector('input[name="champion"]:checked');
+      const champField   = document.getElementById('f-champion');
+      champField.classList.toggle('error', !champChecked);
+      if (!champChecked) ok = false;
+    }
+    return ok;
+  }
+
+  btnNext.addEventListener('click', () => {
+    if (!validateStep(currentStep)) return;
+    currentStep++;
+    showStep(currentStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  btnBack.addEventListener('click', () => {
+    currentStep--;
+    showStep(currentStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateStep(currentStep)) return;
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Sending…';
+
+    const fd = new FormData(form);
+    const data = {};
+
+    // scalar fields
+    ['name','email','department','role','frequency','aiProducts',
+     'taskExample','timeSaved','samplePrompt','claudeMd',
+     'builtAutomation','champion','comments','tools_other'].forEach(k => {
+      data[k] = fd.get(k) || '';
+    });
+
+    // multi-select fields
+    ['tools','tasks','setup','techniques','devTools','devUsage',
+     'learningHabits','barriers'].forEach(k => {
+      data[k] = fd.getAll(k);
+    });
+
+    // merge other tools into tools array
+    if (data.tools_other) data.tools.push(data.tools_other);
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    } catch (_) { /* no-cors swallows errors — submission still goes through */ }
+
+    // Show success
+    form.style.display = 'none';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    success.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // init
+  showStep(1);
+</script>
+</body>
+</html>
